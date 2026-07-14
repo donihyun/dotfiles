@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+SEARCH_DIRS=(
+    "$HOME"
+    "$HOME/projects"
+    "$HOME/work"
+    "$HOME/dev"
+)
+
+existing_dirs=()
+
+for dir in "${SEARCH_DIRS[@]}"; do
+    [[ -d "$dir" ]] && existing_dirs+=("$dir")
+done
+
+if [[ ${#existing_dirs[@]} -eq 0 ]]; then
+    echo "No search directories found."
+    exit 1
+fi
+
+selected="$(
+    find "${existing_dirs[@]}" \
+        -mindepth 1 \
+        -maxdepth 2 \
+        -type d \
+        2>/dev/null |
+        sort -u |
+        fzf --prompt="tmux session > " \
+            --height=100% \
+            --reverse
+)"
+
+[[ -z "${selected:-}" ]] && exit 0
+
+session_name="$(
+    basename "$selected" |
+        tr '.:' '__' |
+        tr ' ' '_'
+)"
+
+if ! tmux has-session -t "=$session_name" 2>/dev/null; then
+    tmux new-session -d -s "$session_name" -c "$selected"
+fi
+
+if [[ -n "${TMUX:-}" ]]; then
+    tmux switch-client -t "$session_name"
+else
+    tmux attach-session -t "$session_name"
+fi
