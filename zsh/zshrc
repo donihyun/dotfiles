@@ -1,0 +1,17 @@
+# allow Ctrl+s to be used as the tmux prefix.
+stty -ixon
+
+# Apple Silicon Homebrew.
+eval "$(/opt/homebrew/bin/brew shellenv)"
+
+# Shell history.
+HISTFILE="$HOME/.zsh_history"
+HISTSIZE=10000
+SAVEHIST=10000
+
+setopt HIST_IGNORE_DUPS
+setopt HIST_IGNORE_SPACE
+setopt SHARE_HISTORY
+eval "$(zoxide init zsh)"
+# fzf
+source <(fzf --zsh)

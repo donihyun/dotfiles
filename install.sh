@@ -41,15 +41,15 @@ install_packages() {
             exit 1
         fi
 
-        brew install tmux fzf git zsh lazygit
+        brew install tmux fzf git zsh lazygit zoxide eza bat ripgrep fd
         return
     fi
 
     if command -v apt-get >/dev/null 2>&1; then
         sudo apt-get update
-        sudo apt-get install -y tmux fzf git zsh curl
+        sudo apt-get install -y tmux fzf git zsh curl zoxide eza bat ripgrep fd-find
     elif command -v dnf >/dev/null 2>&1; then
-        sudo dnf install -y tmux fzf git zsh curl
+        sudo dnf install -y tmux fzf git zsh curl zoxide eza bat ripgrep fd-find
     elif command -v yum >/dev/null 2>&1; then
         sudo yum install -y tmux fzf git zsh curl
     else

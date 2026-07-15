@@ -2,32 +2,20 @@
 
 set -euo pipefail
 
-SEARCH_DIRS=(
-    "$HOME"
-    "$HOME/projects"
-    "$HOME/work"
-    "$HOME/dev"
-)
+if ! command -v zoxide >/dev/null 2>&1; then
+    echo "zoxide is not installed."
+    exit 1
+fi
 
-existing_dirs=()
-
-for dir in "${SEARCH_DIRS[@]}"; do
-    [[ -d "$dir" ]] && existing_dirs+=("$dir")
-done
-
-if [[ ${#existing_dirs[@]} -eq 0 ]]; then
-    echo "No search directories found."
+if ! command -v fzf >/dev/null 2>&1; then
+    echo "fzf is not installed."
     exit 1
 fi
 
 selected="$(
-    find "${existing_dirs[@]}" \
-        -mindepth 1 \
-        -maxdepth 2 \
-        -type d \
-        2>/dev/null |
-        sort -u |
-        fzf --prompt="tmux session > " \
+    zoxide query -l |
+        fzf \
+            --prompt="tmux session > " \
             --height=100% \
             --reverse
 )"
