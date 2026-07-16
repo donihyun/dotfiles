@@ -83,7 +83,7 @@ main() {
     link_file "$DOTFILES_DIR/tmux/.tmux.conf" "$HOME/.tmux.conf"
     link_file "$DOTFILES_DIR/bin/tmux-sessionizer" \
         "$HOME/.local/bin/tmux-sessionizer"
-
+    link_file "$DOTFILES_DIR/nvim" "$HOME/.config/nvim"	
     install_tpm
 
     echo
