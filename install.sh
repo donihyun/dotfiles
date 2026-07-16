@@ -47,7 +47,7 @@ install_packages() {
 
     if command -v apt-get >/dev/null 2>&1; then
         sudo apt-get update
-        sudo apt-get install -y tmux fzf git zsh curl zoxide eza bat ripgrep fd-find
+        sudo apt-get install -y tmux fzf git zsh curl bat ripgrep fd-find
     elif command -v dnf >/dev/null 2>&1; then
         sudo dnf install -y tmux fzf git zsh curl zoxide eza bat ripgrep fd-find
     elif command -v yum >/dev/null 2>&1; then
