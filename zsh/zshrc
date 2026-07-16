@@ -1,10 +1,11 @@
-# allow Ctrl+s to be used as the tmux prefix.
 stty -ixon
 
-# Apple Silicon Homebrew.
-eval "$(/opt/homebrew/bin/brew shellenv)"
+if [[ "$(uname -s)" == "Darwin" ]] && [[ -x /opt/homebrew/bin/brew ]]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
 
-# Shell history.
+export PATH="$HOME/.local/bin:$PATH"
+
 HISTFILE="$HOME/.zsh_history"
 HISTSIZE=10000
 SAVEHIST=10000
@@ -12,6 +13,15 @@ SAVEHIST=10000
 setopt HIST_IGNORE_DUPS
 setopt HIST_IGNORE_SPACE
 setopt SHARE_HISTORY
-eval "$(zoxide init zsh)"
-# fzf
-source <(fzf --zsh)
+
+if command -v zoxide >/dev/null 2>&1; then
+    eval "$(zoxide init zsh)"
+fi
+
+if fzf --zsh >/dev/null 2>&1; then
+    source <(fzf --zsh)
+elif [[ -f /usr/share/doc/fzf/examples/key-bindings.zsh ]]; then
+    source /usr/share/doc/fzf/examples/key-bindings.zsh
+    [[ -f /usr/share/doc/fzf/examples/completion.zsh ]] &&
+        source /usr/share/doc/fzf/examples/completion.zsh
+fi
