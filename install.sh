@@ -49,7 +49,7 @@ install_packages() {
     sudo apt-get update
     sudo apt-get install -y tmux fzf git zsh curl bat ripgrep fd-find
   elif command -v dnf >/dev/null 2>&1; then
-    sudo dnf install -y tmux git zsh curl
+    sudo dnf install -y tmux git zsh
   elif command -v yum >/dev/null 2>&1; then
     sudo yum install -y tmux git zsh curl
   else
