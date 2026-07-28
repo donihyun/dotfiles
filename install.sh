@@ -73,6 +73,9 @@ install_tpm() {
     mkdir -p "$(dirname "$tpm_dir")"
     git clone https://github.com/tmux-plugins/tpm "$tpm_dir"
   fi
+
+  echo "Installing TPM plugins..."
+  "$tpm_dir/bin/install_plugins"
 }
 
 install_zoxide() {
@@ -105,9 +108,6 @@ main() {
   echo
   echo "Start tmux:"
   echo "  tmux new -s work"
-  echo
-  echo "Then install TPM plugins with:"
-  echo "  Ctrl+s followed by Shift+i"
 }
 
 main "$@"
