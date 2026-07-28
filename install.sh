@@ -49,7 +49,11 @@ install_packages() {
     sudo apt-get update
     sudo apt-get install -y tmux fzf git zsh curl bat ripgrep fd-find
   elif command -v dnf >/dev/null 2>&1; then
-    sudo dnf install -y tmux git zsh
+    if grep -Eq '^ID="?ol"?$' /etc/os-release; then
+      sudo dnf --enablerepo=ol9_developer_EPEL install -y tmux fzf git zsh
+    else
+      sudo dnf install -y tmux fzf git zsh
+    fi
   elif command -v yum >/dev/null 2>&1; then
     sudo yum install -y tmux git zsh curl
   else
@@ -95,6 +99,7 @@ main() {
   install_zoxide
   echo "Creating symlinks..."
   link_file "$DOTFILES_DIR/tmux/.tmux.conf" "$HOME/.tmux.conf"
+  link_file "$DOTFILES_DIR/zsh/zshrc" "$HOME/.zshrc"
   link_file "$DOTFILES_DIR/bin/tmux-sessionizer" \
     "$HOME/.local/bin/tmux-sessionizer"
   link_file "$DOTFILES_DIR/nvim" "$HOME/.config/nvim"
