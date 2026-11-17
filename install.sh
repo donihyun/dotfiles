@@ -50,7 +50,32 @@ install_packages() {
     sudo apt-get install -y tmux fzf git zsh curl bat ripgrep fd-find
   elif command -v dnf >/dev/null 2>&1; then
     if grep -Eq '^ID="?ol"?$' /etc/os-release; then
-      sudo dnf --enablerepo=ol9_developer_EPEL install -y tmux fzf git zsh
+      sudo dnf --enablerepo=ol9_developer_EPEL install -y \
+        tmux fzf git zsh curl gcc clang
+
+      local nvim_arch
+      nvim_arch="$(uname -m)"
+      [[ "$nvim_arch" == "aarch64" ]] && nvim_arch="arm64"
+      mkdir -p "$HOME/.local/bin" "$HOME/.local/opt"
+      curl -fsSL "https://github.com/neovim/neovim/releases/download/stable/nvim-linux-${nvim_arch}.tar.gz" |
+        tar -xz -C "$HOME/.local/opt"
+      ln -sfn "$HOME/.local/opt/nvim-linux-${nvim_arch}/bin/nvim" \
+        "$HOME/.local/bin/nvim"
+
+      if [[ ! -x "$HOME/.local/bin/tree-sitter" ]]; then
+        local remove_rust=false
+        if [[ ! -x "$HOME/.cargo/bin/cargo" ]]; then
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs |
+            sh -s -- -y --profile minimal
+          remove_rust=true
+        fi
+        BINDGEN_EXTRA_CLANG_ARGS="-I$(gcc -print-file-name=include)" \
+          "$HOME/.cargo/bin/cargo" install --locked --root "$HOME/.local" \
+            tree-sitter-cli
+        if "$remove_rust"; then
+          "$HOME/.cargo/bin/rustup" self uninstall -y
+        fi
+      fi
     else
       sudo dnf install -y tmux fzf git zsh
     fi
